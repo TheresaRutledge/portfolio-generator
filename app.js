@@ -1,15 +1,6 @@
 
-// const fs = require('fs');
-// const generatePage = require('./src/page-template');
-
-// const profileDataArgs = process.argv.slice(2);
-// const [name,github] = profileDataArgs;
-
-
-// fs.writeFile('index.html',generatePage(name,github),err => {
-//     if(err) throw err;
-//     console.log(`Portfolio Complete. Check out index.html to see the output!`);
-// });
+const fs = require('fs');
+const generatePage = require('./src/page-template');
 
 const inquirer = require('inquirer');
 
@@ -134,9 +125,35 @@ const promptProject = (portfolioData) => {
     });
 }
 
-promptUser()
-.then(promptProject)
-.then(portfolioData => {
-    console.log(portfolioData);
-});
+var mockData = {
+    name: 'Theresa',
+    github: 'theresa',
+    confirmAbout: true,
+    about: 'This is all about me',
+    projects: [
+      {
+        name: 'runbuddy',
+        description: 'run buddy does really cool stuff',
+        languages: ['JavaScript', 'HTML', 'CSS'],
+        link: 'runbuddy.github',
+        feature: false,
+        confirmAddProject: false
+      }
+    ]
+  }
+
+
+ 
+  
+// promptUser()
+// .then(promptProject)
+// .then(portfolioData => {
+const pageHTML = generatePage(mockData); //change back to portfolioData after done testing
+
+    fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw new Error(err);
+
+      console.log('Page created! Check out index.html in this directory to see it!');
+    });
+// });
 
