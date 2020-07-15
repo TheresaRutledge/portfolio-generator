@@ -1,5 +1,5 @@
 
-const fs = require('fs');
+const { writeFile, copyFile}= require('./utils/generate-site.js');
 const generatePage = require('./src/page-template');
 
 const inquirer = require('inquirer');
@@ -112,7 +112,14 @@ const promptProject = (portfolioData) => {
             type: 'confirm',
             name: 'confirmAddProject',
             message: 'Would you like to enter another project?',
-            default: false
+            validate: confirmProject => {
+                if(confirmProject){
+                    return true;
+                } else {
+                    console.log('Enter Y or N');
+                    return false;
+                }
+            }
         }
     ])
     .then(projectData => {
@@ -125,35 +132,46 @@ const promptProject = (portfolioData) => {
     });
 }
 
-var mockData = {
-    name: 'Theresa',
-    github: 'theresa',
-    confirmAbout: true,
-    about: 'This is all about me',
-    projects: [
-      {
-        name: 'runbuddy',
-        description: 'run buddy does really cool stuff',
-        languages: ['JavaScript', 'HTML', 'CSS'],
-        link: 'runbuddy.github',
-        feature: false,
-        confirmAddProject: false
-      }
-    ]
-  }
+// var mockData = {
+//     name: 'Theresa',
+//     github: 'theresa',
+//     confirmAbout: true,
+//     about: 'This is all about me',
+//     projects: [
+//       {
+//         name: 'runbuddy',
+//         description: 'run buddy does really cool stuff',
+//         languages: ['JavaScript', 'HTML', 'CSS'],
+//         link: 'runbuddy.github',
+//         feature: false,
+//         confirmAddProject: false
+//       }
+//     ]
+//   }
 
 
  
   
-// promptUser()
-// .then(promptProject)
-// .then(portfolioData => {
-const pageHTML = generatePage(mockData); //change back to portfolioData after done testing
+promptUser()
+.then(promptProject)
+.then(portfolioData => {
+return generatePage(portfolioData);
+})
+.then(pageHtml => {
+    return writeFile(pageHtml);
+})
+.then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+})
+.then(copyFileResponse => {
+    console.log(copyFileResponse);
+})
+.catch(err => {
+    console.log(err)
+})
 
-    fs.writeFile('./index.html', pageHTML, err => {
-      if (err) throw new Error(err);
 
-      console.log('Page created! Check out index.html in this directory to see it!');
-    });
-// });
+
+
 
